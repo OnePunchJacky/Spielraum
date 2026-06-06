@@ -245,6 +245,7 @@ export default function Spielraum() {
   const [showInstall, setShowInstall]     = useState(false);
 
   const iRef       = useRef(null);
+  const startRef   = useRef(null);
   const wakeLockRef= useRef(null);
   const notifSent  = useRef(false);
 
@@ -286,12 +287,18 @@ export default function Spielraum() {
     if ('setAppBadge' in navigator) navigator.setAppBadge(pending).catch(() => {});
   }, [tasks]);
 
-  // ── Timer ──
+  // ── Timer — wall-clock based to avoid setInterval drift ──
   useEffect(() => {
-    if (running) iRef.current = setInterval(() => setElapsed(e => e + 1), 1000);
-    else clearInterval(iRef.current);
+    if (running) {
+      startRef.current = Date.now();
+      iRef.current = setInterval(() => {
+        setElapsed(Math.floor((Date.now() - startRef.current) / 1000));
+      }, 500);
+    } else {
+      clearInterval(iRef.current);
+    }
     return () => clearInterval(iRef.current);
-  }, [running]);
+  }, [running]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const at     = tasks.find(t => t.id === aid);
   const pct    = at ? Math.min(100, (elapsed / 60 / at.est) * 100) : 0;
