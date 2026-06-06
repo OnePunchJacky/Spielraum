@@ -29,12 +29,13 @@ const CSS = `
     transition: padding-top 0.2s;
     box-shadow: 0 0 60px rgba(80,55,20,0.1);
   }
-  .app.has-banner { padding-top: 48px; }
+  .app.has-banner { padding-top: calc(env(safe-area-inset-top, 0px) + 48px); }
 
   /* PWA Banners */
   .pwa-banner {
     position: fixed; top: 0; left: 50%; transform: translateX(-50%);
-    width: 100%; max-width: 400px; padding: 10px 14px;
+    width: 100%; max-width: 400px;
+    padding: calc(env(safe-area-inset-top, 0px) + 10px) 14px 10px;
     display: flex; align-items: center; gap: 10px; z-index: 300;
   }
   .pwa-banner.install { background: #F5F0E6; border-bottom: 1px solid #D4C8B4; }
@@ -52,7 +53,7 @@ const CSS = `
   .pwa-btn.ghost:hover { color: #5A4E3C; }
 
   /* Header */
-  .header { padding: 20px 20px 0; }
+  .header { padding: calc(env(safe-area-inset-top, 20px) + 20px) 20px 0; }
   .header-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
   .logo { font-family: 'Caveat', cursive; font-size: 30px; font-weight: 700; color: #1E1916; letter-spacing: 0; }
   .logo em { color: #3A7248; font-style: italic; }
