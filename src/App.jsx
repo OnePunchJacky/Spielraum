@@ -115,33 +115,48 @@ const CSS = `
   .t-action.del:hover   { border-color: #B83C2C; color: #B83C2C; background: #F5ECEC; }
   .t-action.defer:hover { border-color: #7A9878; color: #7A9878; background: #EDF3EE; }
 
-  /* Add row */
-  .add-row { background: #FDFCF8; border: 1.5px dashed #C4B8A4; border-radius: 8px; padding: 10px 12px; display: flex; gap: 8px; align-items: center; }
+  /* Add row — title input + chips for duration */
+  .add-row { background: #FDFCF8; border: 1.5px dashed #C4B8A4; border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+  .add-row-top { display: flex; gap: 8px; align-items: center; }
   .add-inp { flex: 1; background: transparent; border: none; outline: none; color: #2C2418; font-family: 'Lora', serif; font-size: 16px; }
   .add-inp::placeholder { color: #C4B8A4; font-style: italic; }
-  .stepper { display: flex; align-items: center; gap: 3px; flex-shrink: 0; }
-  .s-btn { width: 18px; height: 18px; border-radius: 4px; border: 1px solid #D4C8B4; background: transparent; color: #9A8B78; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all 0.15s; }
-  .s-btn:hover { border-color: #A8721A; color: #A8721A; }
-  .s-val { font-family: 'Courier Prime', monospace; font-size: 10px; color: #A8721A; min-width: 30px; text-align: center; }
   .add-btn { width: 26px; height: 26px; border-radius: 6px; border: none; background: #A8721A; color: #FDFCF8; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; transition: all 0.15s; flex-shrink: 0; }
   .add-btn:hover { background: #BA8220; transform: scale(1.06); }
+  /* Duration chips */
+  .est-row { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+  .est-chip { padding: 5px 9px; border-radius: 5px; border: 1px solid #D4C8B4; background: transparent; color: #9A8B78; font-family: 'Courier Prime', monospace; font-size: 12px; cursor: pointer; transition: all 0.15s; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
+  .est-chip.sel { background: #A8721A18; border-color: #A8721A; color: #A8721A; font-weight: 700; }
+  .est-chip:active { transform: scale(0.93); }
+  .est-custom { width: 48px; background: transparent; border: 1px solid #D4C8B4; border-radius: 5px; padding: 5px 6px; font-family: 'Courier Prime', monospace; font-size: 12px; color: #A8721A; text-align: center; outline: none; -webkit-appearance: none; }
+  .est-custom:focus { border-color: #A8721A; }
+
+  /* Spielraum-start button (plan view) */
+  .sr-start-btn { width: 100%; padding: 13px; border-radius: 8px; border: 1px dashed #3A724850; background: #EDF3EE; color: #3A7248; font-family: 'Lora', serif; font-size: 13px; cursor: pointer; margin-top: 6px; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .sr-start-btn:hover { background: #E0EDE5; border-style: solid; }
 
   /* Timer view */
   .timer-view { padding: 20px; }
   .timer-ctx  { font-family: 'Caveat', cursive; font-size: 14px; color: #9A8B78; margin-bottom: 4px; }
-  .timer-task { font-family: 'Lora', serif; font-size: 21px; font-weight: 400; font-style: italic; color: #1E1916; margin-bottom: 24px; line-height: 1.3; }
+  .timer-task { font-family: 'Lora', serif; font-size: 21px; font-weight: 400; font-style: italic; color: #1E1916; margin-bottom: 18px; line-height: 1.3; }
   .timer-num  { font-family: 'Courier Prime', monospace; font-size: 60px; font-weight: 700; letter-spacing: -1px; color: #A8721A; margin-bottom: 6px; line-height: 1; }
-  .timer-num.over { color: #B83C2C; }
+  .timer-num.over  { color: #B83C2C; }
+  .timer-num.green { color: #3A7248; }
+  .timer-num.sr-done { color: #B83C2C; }
+  .timer-paused { display: inline-flex; align-items: center; gap: 5px; font-family: 'Caveat', cursive; font-size: 14px; color: #9A8B78; background: #EDE7DC; border: 1px solid #D4C8B4; border-radius: 6px; padding: 3px 10px; margin-bottom: 10px; }
   .timer-bar-meta { display: flex; justify-content: space-between; font-family: 'Courier Prime', monospace; font-size: 9px; color: #9A8B78; margin-bottom: 5px; }
   .timer-bar { height: 4px; background: #E4DDD0; border-radius: 2px; overflow: hidden; margin-bottom: 20px; }
   .timer-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s linear, background 0.3s; }
   .warn-box { background: #F5ECEC; border: 1px solid #B83C2C30; border-radius: 8px; padding: 9px 12px; font-family: 'Lora', serif; font-size: 11px; color: #B83C2C; margin-bottom: 12px; }
   .warn-box.warn { background: #F8F2DF; border-color: #9A780030; color: #7A5A00; }
-  .t-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .t-actions { display: grid; gap: 8px; margin-bottom: 10px; }
+  .t-actions.two   { grid-template-columns: 1fr 1fr; }
+  .t-actions.three { grid-template-columns: 1fr 1fr 1fr; }
   .ta-btn { padding: 13px; border-radius: 8px; border: 1px solid #DDD5C4; background: #FDFCF8; color: #3C3428; font-family: 'Lora', serif; font-size: 13px; cursor: pointer; transition: all 0.15s; box-shadow: 0 1px 3px rgba(90,60,20,0.08); }
-  .ta-btn.ok   { background: #3A7248; border-color: #3A7248; color: #FDFCF8; }
-  .ta-btn.ok:hover { background: #44845A; }
-  .ta-btn.xtra:hover { border-color: #A8721A; color: #A8721A; background: #F5EDD8; }
+  .ta-btn.ok    { background: #3A7248; border-color: #3A7248; color: #FDFCF8; }
+  .ta-btn.ok:hover  { background: #44845A; }
+  .ta-btn.pause { color: #9A8B78; }
+  .ta-btn.pause:hover { border-color: #A8721A; color: #A8721A; background: #F5EDD8; }
+  .ta-btn.xtra:hover  { border-color: #A8721A; color: #A8721A; background: #F5EDD8; }
   .delta-row { background: #FDFCF8; border: 1px solid #DDD5C4; border-radius: 8px; padding: 9px 12px; display: flex; justify-content: space-between; align-items: center; font-family: 'Lora', serif; font-size: 11px; color: #9A8B78; }
 
   /* Setup view */
@@ -155,6 +170,10 @@ const CSS = `
   input[type="time"] { background: transparent; border: none; outline: none; color: #1E1916; font-family: 'Courier Prime', monospace; font-size: 18px; font-weight: 700; width: 100%; color-scheme: light; }
   .setup-field { background: #FDFCF8; border: 1px solid #DDD5C4; border-radius: 8px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; box-shadow: 0 1px 2px rgba(90,60,20,0.07); }
   .sf-lab { font-family: 'Lora', serif; font-size: 13px; color: #5A4E3C; }
+  /* Number input for setup fields (replaces + / - steppers) */
+  .num-inp { background: transparent; border: 1px solid #D4C8B4; border-radius: 6px; padding: 6px 10px; font-family: 'Courier Prime', monospace; font-size: 16px; color: #A8721A; text-align: center; outline: none; width: 70px; -webkit-appearance: none; }
+  .num-inp:focus { border-color: #A8721A; }
+  .num-inp-unit { font-family: 'Caveat', cursive; font-size: 13px; color: #9A8B78; margin-left: 4px; }
   .cta { width: 100%; padding: 13px; border-radius: 8px; border: none; background: #A8721A; color: #FDFCF8; font-family: 'Caveat', cursive; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: all 0.15s; letter-spacing: 0.3px; }
   .cta:hover { background: #BA8220; }
   .cta-ghost { width: 100%; padding: 11px; border-radius: 8px; border: 1px solid #D4C8B4; background: transparent; color: #9A8B78; font-family: 'Lora', serif; font-size: 13px; cursor: pointer; margin-top: 6px; transition: all 0.15s; }
@@ -206,11 +225,14 @@ const dayLabel = dateStr => {
   const names = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
   return names[new Date(dateStr + 'T12:00:00').getDay()];
 };
+const clampNum = (v, min, max) => Math.max(min, Math.min(max, Number(v) || min));
 
 const loadState = (key, def) => {
   try { const s = localStorage.getItem(key); return s ? JSON.parse(s) : def; }
   catch { return def; }
 };
+
+const EST_PRESETS = [15, 30, 45, 60, 90];
 
 const DEFAULT_TASKS = [
   { id: 1, title: 'E-Mails & Nachrichten', est: 30, actual: null, status: 'planned' },
@@ -229,8 +251,8 @@ export default function Spielraum() {
     return ['plan', 'setup', 'stats'].includes(p) ? p : 'plan';
   });
 
-  const [cfg, setCfg] = useState(() => loadState('spielraum_cfg', DEFAULT_CFG));
-  const [tasks, setTasks] = useState(() => {
+  const [cfg, setCfg]         = useState(() => loadState('spielraum_cfg', DEFAULT_CFG));
+  const [tasks, setTasks]     = useState(() => {
     const saved = loadState('spielraum_tasks', null);
     if (!saved) return DEFAULT_TASKS;
     return saved.map(t => t.status === 'active' ? { ...t, status: 'planned' } : t);
@@ -240,14 +262,19 @@ export default function Spielraum() {
   const [aid, setAid]         = useState(null);
   const [elapsed, setElapsed] = useState(0);
   const [running, setRunning] = useState(false);
+  const [paused, setPaused]   = useState(false);
+  // 'task' = task timer counting up | 'spielraum' = free-time countdown
+  const [timerMode, setTimerMode] = useState('task');
+  const [srStart, setSrStart]     = useState(0); // spielraum minutes when SR timer started
   const [isOnline, setIsOnline]           = useState(navigator.onLine);
   const [installPrompt, setInstallPrompt] = useState(null);
   const [showInstall, setShowInstall]     = useState(false);
 
-  const iRef       = useRef(null);
-  const startRef   = useRef(null);
-  const wakeLockRef= useRef(null);
-  const notifSent  = useRef(false);
+  const iRef        = useRef(null);
+  const startRef    = useRef(null);
+  const pauseBaseRef= useRef(0);   // elapsed seconds captured at pause
+  const wakeLockRef = useRef(null);
+  const notifSent   = useRef(false);
 
   // ── SW registration ──
   const { needRefresh: [needRefresh, setNeedRefresh], updateServiceWorker } = useRegisterSW({
@@ -271,7 +298,7 @@ export default function Spielraum() {
 
   // ── Install prompt ──
   useEffect(() => {
-    const handler = e => { e.preventDefault(); setInstallPrompt(e); setShowInstall(true); };
+    const handler   = e => { e.preventDefault(); setInstallPrompt(e); setShowInstall(true); };
     const installed = () => { setShowInstall(false); setInstallPrompt(null); };
     window.addEventListener('beforeinstallprompt', handler);
     window.addEventListener('appinstalled', installed);
@@ -287,10 +314,11 @@ export default function Spielraum() {
     if ('setAppBadge' in navigator) navigator.setAppBadge(pending).catch(() => {});
   }, [tasks]);
 
-  // ── Timer — wall-clock based to avoid setInterval drift ──
+  // ── Timer — wall-clock, supports pause ──
   useEffect(() => {
-    if (running) {
-      startRef.current = Date.now();
+    if (running && !paused) {
+      // startRef is set to anchor the correct wall-clock origin
+      startRef.current = Date.now() - pauseBaseRef.current * 1000;
       iRef.current = setInterval(() => {
         setElapsed(Math.floor((Date.now() - startRef.current) / 1000));
       }, 500);
@@ -298,14 +326,24 @@ export default function Spielraum() {
       clearInterval(iRef.current);
     }
     return () => clearInterval(iRef.current);
-  }, [running]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [running, paused]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ── Derived timer values ──
   const at     = tasks.find(t => t.id === aid);
   const pct    = at ? Math.min(100, (elapsed / 60 / at.est) * 100) : 0;
   const isOver = pct >= 100;
   const isWarn = pct >= 75 && !isOver;
 
-  // ── Timer-over notification ──
+  // SR countdown
+  const srRemaining  = Math.max(0, srStart * 60 - elapsed);
+  const srOver       = timerMode === 'spielraum' && srRemaining === 0 && running;
+  const srPct        = srStart > 0 ? (srRemaining / (srStart * 60)) * 100 : 100;
+  const srH = Math.floor(srRemaining / 3600);
+  const srM = Math.floor((srRemaining % 3600) / 60);
+  const srS = srRemaining % 60;
+  const srStr = srH > 0 ? `${pad(srH)}:${pad(srM)}:${pad(srS)}` : `${pad(srM)}:${pad(srS)}`;
+
+  // ── Timer-over notification (foreground fallback; SW handles background) ──
   useEffect(() => {
     if (isOver && !notifSent.current && at) {
       notifSent.current = true;
@@ -334,10 +372,10 @@ export default function Spielraum() {
   }, []);
 
   useEffect(() => {
-    const reacquire = () => { if (!document.hidden && running) acquireWakeLock(); };
+    const reacquire = () => { if (!document.hidden && running && !paused) acquireWakeLock(); };
     document.addEventListener('visibilitychange', reacquire);
     return () => document.removeEventListener('visibilitychange', reacquire);
-  }, [running, acquireWakeLock]);
+  }, [running, paused, acquireWakeLock]);
 
   // ── Calculations ──
   const dayMin    = (cfg.eH * 60 + cfg.eM) - (cfg.sH * 60 + cfg.sM);
@@ -351,9 +389,9 @@ export default function Spielraum() {
   const freeDelta = at ? at.est - Math.ceil(elapsed / 60) : 0;
 
   const total = Math.max(dayMin, 1);
-  const tPct  = Math.min((taskMin / total) * 100, 100);
-  const bPct  = Math.min((bufMin  / total) * 100, 100);
-  const brPct = Math.min((breakMin/ total) * 100, 100);
+  const tPct  = Math.min((taskMin  / total) * 100, 100);
+  const bPct  = Math.min((bufMin   / total) * 100, 100);
+  const brPct = Math.min((breakMin / total) * 100, 100);
   const sPct  = Math.max(0, Math.min((Math.max(0, spielraum) / total) * 100, 100));
 
   // ── Weekly stats ──
@@ -363,7 +401,7 @@ export default function Spielraum() {
   });
   const weeklyStats = last7.map(date => {
     const entries = history.filter(h => h.date === date);
-    const acc   = entries.length ? Math.round(entries.reduce((s,h) => s + h.acc, 0) / entries.length) : 0;
+    const acc   = entries.length ? Math.round(entries.reduce((s, h) => s + h.acc, 0) / entries.length) : 0;
     const delta = entries.length ? entries.reduce((s, h) => s + h.delta, 0) : 0;
     return { d: dayLabel(date), acc, delta, hasData: entries.length > 0, isToday: date === todayStr() };
   });
@@ -379,14 +417,9 @@ export default function Spielraum() {
   const hasBanner    = showInstall || needRefresh;
 
   // ── SW alarm helpers ──
-  const scheduleSwAlarm = useCallback((task) => {
+  const scheduleSwAlarm = useCallback((delayMs, title, body) => {
     if (!navigator.serviceWorker?.controller) return;
-    navigator.serviceWorker.controller.postMessage({
-      type: 'SCHEDULE_ALARM',
-      delay: task.est * 60 * 1000,
-      title: '⏰ Zeit abgelaufen!',
-      body: `${task.title} – geschätzte Zeit überschritten`,
-    });
+    navigator.serviceWorker.controller.postMessage({ type: 'SCHEDULE_ALARM', delay: delayMs, title, body });
   }, []);
 
   const cancelSwAlarm = useCallback(() => {
@@ -401,10 +434,32 @@ export default function Spielraum() {
       Notification.requestPermission().catch(() => {});
     }
     const task = tasks.find(t => t.id === id);
-    setAid(id); setElapsed(0); setRunning(true); setView('active');
+    pauseBaseRef.current = 0;
+    setAid(id); setElapsed(0); setRunning(true); setPaused(false);
+    setTimerMode('task'); setView('active');
     setTasks(p => p.map(t => t.id === id ? { ...t, status: 'active' } : t));
-    if (task) scheduleSwAlarm(task);
+    if (task) scheduleSwAlarm(task.est * 60 * 1000, '⏰ Zeit abgelaufen!', `${task.title} – geschätzte Zeit überschritten`);
   }, [acquireWakeLock, tasks, scheduleSwAlarm]);
+
+  const pauseTimer = useCallback(() => {
+    cancelSwAlarm();
+    pauseBaseRef.current = elapsed;
+    setPaused(true);
+    releaseWakeLock();
+  }, [elapsed, cancelSwAlarm, releaseWakeLock]);
+
+  const resumeTimer = useCallback(async () => {
+    await acquireWakeLock();
+    setPaused(false);
+    // Re-schedule alarm with remaining time
+    if (timerMode === 'task' && at) {
+      const remainMs = Math.max(0, at.est * 60 - elapsed) * 1000;
+      if (remainMs > 0) scheduleSwAlarm(remainMs, '⏰ Zeit abgelaufen!', `${at.title} – geschätzte Zeit überschritten`);
+    } else if (timerMode === 'spielraum') {
+      const remainMs = Math.max(0, srStart * 60 - elapsed) * 1000;
+      if (remainMs > 0) scheduleSwAlarm(remainMs, '🌿 Spielraum aufgebraucht!', 'Deine freie Zeit ist abgelaufen.');
+    }
+  }, [acquireWakeLock, timerMode, at, elapsed, srStart, scheduleSwAlarm]);
 
   const finishTask = useCallback(() => {
     cancelSwAlarm();
@@ -416,12 +471,35 @@ export default function Spielraum() {
       setHistory(p => [...p, { date: todayStr(), title: entry.title, est: entry.est, actual, acc, delta }]);
     }
     setTasks(p => p.map(t => t.id === aid ? { ...t, status: 'done', actual } : t));
-    setRunning(false);
+    setRunning(false); setPaused(false);
+    pauseBaseRef.current = 0;
     releaseWakeLock();
     setAid(null);
     setView('plan');
     if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
   }, [elapsed, aid, tasks, releaseWakeLock, cancelSwAlarm]);
+
+  const startSpielraumTimer = useCallback(async () => {
+    if (spielraum <= 0) return;
+    await acquireWakeLock();
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission().catch(() => {});
+    }
+    pauseBaseRef.current = 0;
+    setSrStart(spielraum);
+    setElapsed(0); setRunning(true); setPaused(false);
+    setTimerMode('spielraum'); setView('active');
+    scheduleSwAlarm(spielraum * 60 * 1000, '🌿 Spielraum aufgebraucht!', 'Deine freie Zeit ist abgelaufen.');
+  }, [acquireWakeLock, spielraum, scheduleSwAlarm]);
+
+  const finishSpielraumTimer = useCallback(() => {
+    cancelSwAlarm();
+    setRunning(false); setPaused(false);
+    pauseBaseRef.current = 0;
+    setTimerMode('task');
+    releaseWakeLock();
+    setView('plan');
+  }, [releaseWakeLock, cancelSwAlarm]);
 
   const addMore      = () => setTasks(p => p.map(t => t.id === aid ? { ...t, est: t.est + 15 } : t));
   const removeTask   = id => setTasks(p => p.filter(t => t.id !== id));
@@ -450,13 +528,14 @@ export default function Spielraum() {
   const resetDay = () => {
     cancelSwAlarm();
     setTasks(DEFAULT_TASKS);
-    setAid(null); setElapsed(0); setRunning(false);
+    setAid(null); setElapsed(0); setRunning(false); setPaused(false);
+    pauseBaseRef.current = 0;
+    setTimerMode('task');
     releaseWakeLock();
   };
 
   const notifPerm = 'Notification' in window ? Notification.permission : 'unsupported';
 
-  // ─────────────────────────────────────────────────────────────────────────────
   return (
     <>
       <style>{CSS}</style>
@@ -563,29 +642,56 @@ export default function Spielraum() {
                 );
               })}
             </div>
+
+            {/* Add task */}
             <div className="add-row">
-              <input
-                className="add-inp"
-                placeholder="Neue Aufgabe..."
-                value={nTask.title}
-                onChange={e => setNTask(p => ({ ...p, title: e.target.value }))}
-                onKeyDown={e => e.key === 'Enter' && addTask()}
-              />
-              <div className="stepper">
-                <button className="s-btn" onClick={() => setNTask(p => ({ ...p, est: Math.max(5, p.est - 5) }))}>−</button>
-                <div className="s-val">{nTask.est}m</div>
-                <button className="s-btn" onClick={() => setNTask(p => ({ ...p, est: p.est + 5 }))}>+</button>
+              <div className="add-row-top">
+                <input
+                  className="add-inp"
+                  placeholder="Neue Aufgabe..."
+                  value={nTask.title}
+                  onChange={e => setNTask(p => ({ ...p, title: e.target.value }))}
+                  onKeyDown={e => e.key === 'Enter' && addTask()}
+                />
+                <button className="add-btn" onClick={addTask}>+</button>
               </div>
-              <button className="add-btn" onClick={addTask}>+</button>
+              <div className="est-row">
+                {EST_PRESETS.map(v => (
+                  <button
+                    key={v}
+                    className={`est-chip${nTask.est === v ? ' sel' : ''}`}
+                    onClick={() => setNTask(p => ({ ...p, est: v }))}
+                  >
+                    {v < 60 ? `${v}m` : `${v / 60}h`}
+                  </button>
+                ))}
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  className="est-custom"
+                  min="5" max="480" step="5"
+                  value={nTask.est}
+                  onChange={e => setNTask(p => ({ ...p, est: clampNum(e.target.value, 5, 480) }))}
+                  title="Minuten (eigener Wert)"
+                />
+              </div>
             </div>
+
+            {/* Spielraum-Timer start */}
+            {spielraum > 0 && !running && (
+              <button className="sr-start-btn" onClick={startSpielraumTimer}>
+                🌿 Spielraum nutzen — {fmtMin(spielraum)} Countdown starten
+              </button>
+            )}
           </div>
         )}
 
-        {/* ════ ACTIVE TIMER ════ */}
-        {view === 'active' && at && (
+        {/* ════ ACTIVE TIMER — TASK MODE ════ */}
+        {view === 'active' && timerMode === 'task' && at && (
           <div className="timer-view">
             <div className="timer-ctx">Aktive Aufgabe</div>
             <div className="timer-task">{at.title}</div>
+            {paused && <div className="timer-paused">⏸ Pausiert</div>}
             <div className={`timer-num ${isOver ? 'over' : ''}`}>{timerStr}</div>
             <div className="timer-bar-meta">
               <span>0m</span><span>Geplant: {at.est}m</span>
@@ -597,22 +703,58 @@ export default function Spielraum() {
               }} />
             </div>
             {isWarn && !isOver && (
-              <div className="warn-box warn">
-                ⏱ Noch {Math.ceil(at.est - elapsed / 60)}m verbleibend
-              </div>
+              <div className="warn-box warn">⏱ Noch {Math.ceil(at.est - elapsed / 60)}m verbleibend</div>
             )}
             {isOver && (
               <div className="warn-box">⚠ Zeit überschritten — andere Tasks verschieben?</div>
             )}
-            <div className="t-actions">
-              <button className="ta-btn ok"   onClick={finishTask}>✓ Fertig</button>
-              <button className="ta-btn xtra" onClick={addMore}>+ 15 Min</button>
+            <div className={`t-actions ${paused ? 'two' : 'three'}`}>
+              <button className="ta-btn ok" onClick={finishTask}>✓ Fertig</button>
+              {paused
+                ? <button className="ta-btn pause" onClick={resumeTimer}>▶ Weiter</button>
+                : <>
+                    <button className="ta-btn pause" onClick={pauseTimer}>⏸ Pause</button>
+                    <button className="ta-btn xtra"  onClick={addMore}>+15 Min</button>
+                  </>
+              }
             </div>
             <div className="delta-row">
               <span>Spielraum-Delta</span>
               <span style={{ fontFamily:"'Courier Prime',monospace", fontSize:'14px', fontWeight:700, color: freeDelta >= 0 ? '#3A7248' : '#B83C2C' }}>
                 {freeDelta >= 0 ? '+' : ''}{freeDelta}m
               </span>
+            </div>
+          </div>
+        )}
+
+        {/* ════ ACTIVE TIMER — SPIELRAUM COUNTDOWN ════ */}
+        {view === 'active' && timerMode === 'spielraum' && (
+          <div className="timer-view">
+            <div className="timer-ctx">Freie Zeit</div>
+            <div className="timer-task" style={{color:'#3A7248'}}>Spielraum-Countdown</div>
+            {paused && <div className="timer-paused">⏸ Pausiert</div>}
+            <div className={`timer-num ${srOver ? 'sr-done' : 'green'}`}>{srStr}</div>
+            <div className="timer-bar-meta">
+              <span>verbleibend</span><span>von {fmtMin(srStart)}</span>
+            </div>
+            <div className="timer-bar">
+              <div className="timer-bar-fill" style={{
+                width: `${srPct}%`,
+                background: srOver ? '#B83C2C' : srPct < 25 ? '#A07820' : '#3A7248',
+              }} />
+            </div>
+            {srOver && (
+              <div className="warn-box">🌿 Spielraum aufgebraucht — Zeit zurück zur Arbeit!</div>
+            )}
+            {!srOver && srPct < 25 && (
+              <div className="warn-box warn">⏱ Weniger als ¼ deiner freien Zeit übrig</div>
+            )}
+            <div className={`t-actions two`}>
+              <button className="ta-btn ok" onClick={finishSpielraumTimer}>✓ Beenden</button>
+              {paused
+                ? <button className="ta-btn pause" onClick={resumeTimer}>▶ Weiter</button>
+                : <button className="ta-btn pause" onClick={pauseTimer}>⏸ Pause</button>
+              }
             </div>
           </div>
         )}
@@ -640,10 +782,11 @@ export default function Spielraum() {
               <div className="setup-sec-lab">Standard-Puffer</div>
               <div className="setup-field">
                 <span className="sf-lab">Zwischen Tasks</span>
-                <div className="stepper">
-                  <button className="s-btn" style={{width:22,height:22}} onClick={() => setCfg(p=>({...p,buf:Math.max(0,p.buf-5)}))}>−</button>
-                  <div className="s-val">{cfg.buf}m</div>
-                  <button className="s-btn" style={{width:22,height:22}} onClick={() => setCfg(p=>({...p,buf:p.buf+5}))}>+</button>
+                <div style={{display:'flex',alignItems:'center'}}>
+                  <input type="number" inputMode="numeric" className="num-inp" min="0" max="60" step="5"
+                    value={cfg.buf}
+                    onChange={e => setCfg(p => ({...p, buf: clampNum(e.target.value, 0, 60)}))} />
+                  <span className="num-inp-unit">min</span>
                 </div>
               </div>
             </div>
@@ -652,12 +795,11 @@ export default function Spielraum() {
               {cfg.breaks.map(b => (
                 <div className="setup-field" key={b.id}>
                   <span className="sf-lab">{b.lbl}</span>
-                  <div className="stepper">
-                    <button className="s-btn" style={{width:22,height:22}}
-                      onClick={() => setCfg(p=>({...p,breaks:p.breaks.map(br=>br.id===b.id?{...br,dur:Math.max(5,br.dur-5)}:br)}))}>−</button>
-                    <div className="s-val">{b.dur}m</div>
-                    <button className="s-btn" style={{width:22,height:22}}
-                      onClick={() => setCfg(p=>({...p,breaks:p.breaks.map(br=>br.id===b.id?{...br,dur:br.dur+5}:br)}))}>+</button>
+                  <div style={{display:'flex',alignItems:'center'}}>
+                    <input type="number" inputMode="numeric" className="num-inp" min="5" max="240" step="5"
+                      value={b.dur}
+                      onChange={e => setCfg(p => ({...p, breaks: p.breaks.map(br => br.id===b.id ? {...br, dur: clampNum(e.target.value, 5, 240)} : br)}))} />
+                    <span className="num-inp-unit">min</span>
                   </div>
                 </div>
               ))}
@@ -666,10 +808,11 @@ export default function Spielraum() {
               <div className="setup-sec-lab">Mindest-Spielraum</div>
               <div className="setup-field">
                 <span className="sf-lab">Gewünschte Freizeit</span>
-                <div className="stepper">
-                  <button className="s-btn" style={{width:22,height:22}} onClick={() => setCfg(p=>({...p,wantFree:Math.max(0,p.wantFree-15)}))}>−</button>
-                  <div className="s-val">{cfg.wantFree}m</div>
-                  <button className="s-btn" style={{width:22,height:22}} onClick={() => setCfg(p=>({...p,wantFree:p.wantFree+15}))}>+</button>
+                <div style={{display:'flex',alignItems:'center'}}>
+                  <input type="number" inputMode="numeric" className="num-inp" min="0" max="480" step="15"
+                    value={cfg.wantFree}
+                    onChange={e => setCfg(p => ({...p, wantFree: clampNum(e.target.value, 0, 480)}))} />
+                  <span className="num-inp-unit">min</span>
                 </div>
               </div>
             </div>
@@ -749,7 +892,7 @@ export default function Spielraum() {
           {[
             ['setup', '⚙', 'Setup',  false],
             ['plan',  '▤', 'Plan',   false],
-            ['active','▶', 'Aktiv',  !aid],
+            ['active','▶', 'Aktiv',  !aid && timerMode !== 'spielraum'],
             ['stats', '◈', 'Stats',  false],
           ].map(([v, ico, lbl, disabled]) => (
             <button
