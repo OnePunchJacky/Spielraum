@@ -117,7 +117,7 @@ const CSS = `
 
   /* Add row */
   .add-row { background: #FDFCF8; border: 1.5px dashed #C4B8A4; border-radius: 8px; padding: 10px 12px; display: flex; gap: 8px; align-items: center; }
-  .add-inp { flex: 1; background: transparent; border: none; outline: none; color: #2C2418; font-family: 'Lora', serif; font-size: 13px; }
+  .add-inp { flex: 1; background: transparent; border: none; outline: none; color: #2C2418; font-family: 'Lora', serif; font-size: 16px; }
   .add-inp::placeholder { color: #C4B8A4; font-style: italic; }
   .stepper { display: flex; align-items: center; gap: 3px; flex-shrink: 0; }
   .s-btn { width: 18px; height: 18px; border-radius: 4px; border: 1px solid #D4C8B4; background: transparent; color: #9A8B78; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all 0.15s; }
