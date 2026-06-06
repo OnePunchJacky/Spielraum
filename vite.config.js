@@ -2,7 +2,10 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
+const base = '/Spielraum/';
+
 export default defineConfig({
+  base,
   plugins: [
     react(),
     VitePWA({
@@ -16,8 +19,8 @@ export default defineConfig({
         background_color: '#0B0B0F',
         display: 'standalone',
         orientation: 'portrait-primary',
-        start_url: '/',
-        scope: '/',
+        start_url: '/Spielraum/',
+        scope: '/Spielraum/',
         lang: 'de',
         categories: ['productivity', 'utilities'],
         icons: [
@@ -39,14 +42,14 @@ export default defineConfig({
             name: 'Tagesplan',
             short_name: 'Plan',
             description: 'Aufgaben des Tages anzeigen',
-            url: '/?view=plan',
+            url: '/Spielraum/?view=plan',
             icons: [{ src: 'icon.svg', sizes: 'any' }],
           },
           {
             name: 'Tages-Setup',
             short_name: 'Setup',
             description: 'Tag konfigurieren',
-            url: '/?view=setup',
+            url: '/Spielraum/?view=setup',
             icons: [{ src: 'icon.svg', sizes: 'any' }],
           },
         ],
