@@ -3,17 +3,31 @@ import { useRegisterSW } from 'virtual:pwa-register/react';
 
 // ─── CSS ───────────────────────────────────────────────────────────────────────
 const CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&family=Courier+Prime:wght@400;700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { height: 100%; }
-  body { background: #0B0B0F; color: #E0E0E8; font-family: 'Syne', sans-serif; -webkit-font-smoothing: antialiased; height: 100%; }
+  body {
+    background: #EAE4D8;
+    color: #1E1916;
+    font-family: 'Lora', Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+    height: 100%;
+  }
   #root { height: 100%; }
 
   .app {
     max-width: 400px; margin: 0 auto; min-height: 100vh;
     padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
-    background: #0B0B0F;
+    background: #F5F0E6;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 27px,
+      rgba(170,155,130,0.16) 27px,
+      rgba(170,155,130,0.16) 28px
+    );
     transition: padding-top 0.2s;
+    box-shadow: 0 0 60px rgba(80,55,20,0.1);
   }
   .app.has-banner { padding-top: 48px; }
 
@@ -22,150 +36,161 @@ const CSS = `
     position: fixed; top: 0; left: 50%; transform: translateX(-50%);
     width: 100%; max-width: 400px; padding: 10px 14px;
     display: flex; align-items: center; gap: 10px; z-index: 300;
-    border-bottom: 1px solid transparent;
   }
-  .pwa-banner.install { background: #13131C; border-color: #E8A34738; }
-  .pwa-banner.update  { background: #0A1610; border-color: #5DB07D38; }
+  .pwa-banner.install { background: #F5F0E6; border-bottom: 1px solid #D4C8B4; }
+  .pwa-banner.update  { background: #EDF3EE; border-bottom: 1px solid #3A724830; }
   .pwa-banner-ico  { font-size: 16px; flex-shrink: 0; }
-  .pwa-banner-text { flex: 1; font-size: 11px; color: #B0B0C4; line-height: 1.35; }
-  .pwa-banner-text strong { color: #E0E0E8; font-weight: 700; }
+  .pwa-banner-text { flex: 1; font-size: 11px; color: #7A6A58; line-height: 1.4; font-family: 'Lora', serif; }
+  .pwa-banner-text strong { color: #1E1916; }
   .pwa-banner-actions { display: flex; gap: 6px; flex-shrink: 0; }
-  .pwa-btn { padding: 5px 11px; border-radius: 7px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: 'Syne', sans-serif; transition: all 0.15s; white-space: nowrap; }
-  .pwa-btn.amber { background: #E8A347; color: #0B0B0F; border: none; }
-  .pwa-btn.amber:hover { background: #F0B458; }
-  .pwa-btn.green { background: #5DB07D; color: #0B0B0F; border: none; }
-  .pwa-btn.green:hover { background: #6DC48E; }
-  .pwa-btn.ghost { background: transparent; color: #48485A; border: 1px solid #1E1E2E; }
-  .pwa-btn.ghost:hover { color: #7070A0; border-color: #2E2E4E; }
+  .pwa-btn { padding: 5px 12px; border-radius: 5px; font-family: 'Caveat', cursive; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .pwa-btn.amber { background: #A8721A; color: #FDFCF8; border: none; }
+  .pwa-btn.amber:hover { background: #BA8220; }
+  .pwa-btn.green { background: #3A7248; color: #FDFCF8; border: none; }
+  .pwa-btn.green:hover { background: #44845A; }
+  .pwa-btn.ghost { background: transparent; color: #9A8B78; border: 1px solid #D0C4B0; }
+  .pwa-btn.ghost:hover { color: #5A4E3C; }
 
   /* Header */
-  .header { padding: 18px 20px 0; }
-  .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-  .logo { font-size: 21px; font-weight: 800; letter-spacing: -0.5px; }
-  .logo em { color: #5DB07D; font-style: normal; }
+  .header { padding: 20px 20px 0; }
+  .header-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+  .logo { font-family: 'Caveat', cursive; font-size: 30px; font-weight: 700; color: #1E1916; letter-spacing: 0; }
+  .logo em { color: #3A7248; font-style: italic; }
   .header-right { display: flex; align-items: center; gap: 8px; }
-  .date-pill { font-family: 'Space Mono', monospace; font-size: 10px; color: #5A5A70; background: #13131C; padding: 4px 10px; border-radius: 20px; border: 1px solid #1E1E2C; }
-  .offline-pill { display: flex; align-items: center; gap: 4px; font-size: 9px; color: #E05C5C; background: #160A0A; padding: 3px 8px; border-radius: 10px; border: 1px solid #E05C5C30; }
-  .offline-dot { width: 5px; height: 5px; border-radius: 50%; background: #E05C5C; animation: blink 1.5s ease-in-out infinite; }
+  .date-pill { font-family: 'Courier Prime', monospace; font-size: 10px; color: #9A8B78; background: #EDE7DC; padding: 3px 10px; border-radius: 4px; border: 1px solid #D4C8B4; letter-spacing: 0.5px; }
+  .offline-pill { display: flex; align-items: center; gap: 4px; font-family: 'Courier Prime', monospace; font-size: 9px; color: #B83C2C; background: #F5EBE8; padding: 3px 8px; border-radius: 4px; border: 1px solid #B83C2C28; }
+  .offline-dot { width: 5px; height: 5px; border-radius: 50%; background: #B83C2C; animation: blink 1.5s ease-in-out infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
   /* Day Bar */
-  .day-bar { height: 6px; background: #15151F; border-radius: 3px; overflow: hidden; display: flex; margin-bottom: 8px; }
+  .day-bar { height: 7px; background: #E4DDD0; border-radius: 4px; overflow: hidden; display: flex; margin-bottom: 9px; }
   .seg { height: 100%; transition: width 0.35s cubic-bezier(.4,0,.2,1); flex-shrink: 0; }
   .legend { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
-  .leg-item { display: flex; align-items: center; gap: 5px; font-size: 9.5px; color: #5A5A70; letter-spacing: 0.3px; }
-  .leg-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .leg-item { display: flex; align-items: center; gap: 5px; font-family: 'Caveat', cursive; font-size: 12px; color: #9A8B78; }
+  .leg-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
   /* KPIs */
-  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 10px 20px; border-bottom: 1px solid #18182A; border-top: 1px solid #18182A; }
-  .kpi { background: #10101A; border: 1px solid #1A1A28; border-radius: 10px; padding: 9px 6px; text-align: center; }
-  .kpi-val { font-family: 'Space Mono', monospace; font-size: 11.5px; font-weight: 700; color: #D0D0DE; }
-  .kpi-lab { font-size: 8px; color: #48485A; text-transform: uppercase; letter-spacing: 0.6px; margin-top: 3px; }
-  .kpi.good { border-color: #5DB07D44; background: #0A1610; }
-  .kpi.good .kpi-val { color: #5DB07D; }
-  .kpi.bad  { border-color: #E05C5C44; background: #160A0A; }
-  .kpi.bad  .kpi-val { color: #E05C5C; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 10px 20px; border-bottom: 1px solid #DDD5C4; border-top: 1px solid #DDD5C4; }
+  .kpi { background: #FDFCF8; border: 1px solid #DDD5C4; border-radius: 8px; padding: 9px 6px; text-align: center; box-shadow: 0 1px 3px rgba(90,60,20,0.08); }
+  .kpi-val { font-family: 'Courier Prime', monospace; font-size: 11.5px; font-weight: 700; color: #3C3428; }
+  .kpi-lab { font-family: 'Caveat', cursive; font-size: 11px; color: #9A8B78; margin-top: 2px; }
+  .kpi.good { border-color: #3A724850; background: #EDF3EE; }
+  .kpi.good .kpi-val { color: #3A7248; }
+  .kpi.bad  { border-color: #B83C2C44; background: #F5ECEC; }
+  .kpi.bad  .kpi-val { color: #B83C2C; }
 
   /* Plan view */
   .content { padding: 14px 20px 0; }
-  .sec-head { font-size: 10px; font-weight: 700; color: #48485A; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 10px; }
-  .tasks { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
-  .task { background: #10101A; border: 1px solid #1A1A28; border-radius: 11px; padding: 11px 12px; display: flex; align-items: center; gap: 9px; transition: border-color 0.2s, background 0.2s; }
-  .task:hover { border-color: #26263A; }
-  @keyframes task-pulse { 0%,100%{border-color:#E8A34750;box-shadow:none} 50%{border-color:#E8A34790;box-shadow:0 0 12px #E8A34718} }
-  .task.active   { animation: task-pulse 2s ease-in-out infinite; background: #16120A; }
-  .task.done     { opacity: 0.38; }
-  .task.deferred { opacity: 0.28; border-style: dashed; }
-  .t-dot { width: 7px; height: 7px; border-radius: 50%; background: #E8A347; flex-shrink: 0; transition: box-shadow 0.3s; }
-  .t-dot.done     { background: #5DB07D; }
-  .t-dot.deferred { background: #3A3A4A; }
-  .t-dot.active   { background: #E8A347; box-shadow: 0 0 8px #E8A34780; }
-  .t-name { flex: 1; font-size: 13px; font-weight: 500; color: #C0C0D0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .t-name.struck { text-decoration: line-through; }
-  .t-time { font-family: 'Space Mono', monospace; font-size: 10px; color: #48485A; background: #18182A; padding: 3px 7px; border-radius: 5px; white-space: nowrap; flex-shrink: 0; }
-  .t-time.over   { color: #E05C5C; background: #18100A; }
-  .t-time.active { color: #E8A347; background: #1A1408; }
-  .t-action { width: 26px; height: 26px; border-radius: 7px; border: 1px solid #1E1E2E; background: transparent; color: #48485A; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all 0.15s; flex-shrink: 0; }
-  .t-action:hover      { border-color: #E8A347; color: #E8A347; background: #E8A34712; }
-  .t-action.del:hover  { border-color: #E05C5C; color: #E05C5C; background: #E05C5C12; }
-  .t-action.defer:hover{ border-color: #6868A0; color: #6868A0; background: #6868A012; }
+  .sec-head { font-family: 'Caveat', cursive; font-size: 14px; font-weight: 600; color: #9A8B78; letter-spacing: 0.3px; margin-bottom: 10px; }
+  .tasks { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+  .task {
+    background: #FDFCF8;
+    border: 1px solid #DDD5C4;
+    border-radius: 8px;
+    padding: 11px 12px;
+    display: flex; align-items: center; gap: 9px;
+    transition: box-shadow 0.2s, border-color 0.2s;
+    box-shadow: 0 1px 3px rgba(90,60,20,0.08);
+  }
+  .task:hover { border-color: #C4B8A4; box-shadow: 0 2px 6px rgba(90,60,20,0.13); }
+  @keyframes task-pulse {
+    0%,100% { border-color: #A8721A44; box-shadow: 0 1px 3px rgba(90,60,20,0.08); }
+    50% { border-color: #A8721A; box-shadow: 0 2px 10px rgba(168,114,26,0.2); }
+  }
+  .task.active   { animation: task-pulse 2s ease-in-out infinite; background: #FBF4E4; }
+  .task.done     { opacity: 0.42; box-shadow: none; }
+  .task.deferred { opacity: 0.34; border-style: dashed; box-shadow: none; background: #F8F5EE; }
+  .t-dot { width: 9px; height: 9px; border-radius: 50%; background: #A8721A; flex-shrink: 0; border: 1.5px solid transparent; transition: box-shadow 0.3s; }
+  .t-dot.done     { background: #3A7248; }
+  .t-dot.deferred { background: transparent; border-color: #C4B8A4; }
+  .t-dot.active   { background: #A8721A; box-shadow: 0 0 7px #A8721A88; }
+  .t-name { flex: 1; font-family: 'Lora', serif; font-size: 13.5px; font-weight: 400; color: #2C2418; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .t-name.struck { text-decoration: line-through; text-decoration-color: #A8A090; color: #9A8B78; }
+  .t-time { font-family: 'Courier Prime', monospace; font-size: 10px; color: #9A8B78; background: #EDE7DC; padding: 3px 7px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; border: 1px solid #D4C8B4; }
+  .t-time.over   { color: #B83C2C; background: #F5ECEC; border-color: #B83C2C30; }
+  .t-time.active { color: #A8721A; background: #F5EDD8; border-color: #A8721A30; }
+  .t-action { width: 26px; height: 26px; border-radius: 6px; border: 1px solid #D4C8B4; background: transparent; color: #C0B4A4; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all 0.15s; flex-shrink: 0; }
+  .t-action:hover       { border-color: #A8721A; color: #A8721A; background: #F5EDD8; }
+  .t-action.del:hover   { border-color: #B83C2C; color: #B83C2C; background: #F5ECEC; }
+  .t-action.defer:hover { border-color: #7A9878; color: #7A9878; background: #EDF3EE; }
 
   /* Add row */
-  .add-row { background: #10101A; border: 1px dashed #20203A; border-radius: 11px; padding: 10px 12px; display: flex; gap: 8px; align-items: center; }
-  .add-inp { flex: 1; background: transparent; border: none; outline: none; color: #D0D0DC; font-family: 'Syne', sans-serif; font-size: 13px; }
-  .add-inp::placeholder { color: #303048; }
+  .add-row { background: #FDFCF8; border: 1.5px dashed #C4B8A4; border-radius: 8px; padding: 10px 12px; display: flex; gap: 8px; align-items: center; }
+  .add-inp { flex: 1; background: transparent; border: none; outline: none; color: #2C2418; font-family: 'Lora', serif; font-size: 13px; }
+  .add-inp::placeholder { color: #C4B8A4; font-style: italic; }
   .stepper { display: flex; align-items: center; gap: 3px; flex-shrink: 0; }
-  .s-btn { width: 18px; height: 18px; border-radius: 5px; border: 1px solid #1E1E2E; background: transparent; color: #48485A; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all 0.15s; }
-  .s-btn:hover { border-color: #E8A347; color: #E8A347; }
-  .s-val { font-family: 'Space Mono', monospace; font-size: 10px; color: #E8A347; min-width: 30px; text-align: center; }
-  .add-btn { width: 26px; height: 26px; border-radius: 7px; border: none; background: #E8A347; color: #0B0B0F; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; transition: all 0.15s; flex-shrink: 0; }
-  .add-btn:hover { background: #F0B458; transform: scale(1.06); }
+  .s-btn { width: 18px; height: 18px; border-radius: 4px; border: 1px solid #D4C8B4; background: transparent; color: #9A8B78; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all 0.15s; }
+  .s-btn:hover { border-color: #A8721A; color: #A8721A; }
+  .s-val { font-family: 'Courier Prime', monospace; font-size: 10px; color: #A8721A; min-width: 30px; text-align: center; }
+  .add-btn { width: 26px; height: 26px; border-radius: 6px; border: none; background: #A8721A; color: #FDFCF8; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; transition: all 0.15s; flex-shrink: 0; }
+  .add-btn:hover { background: #BA8220; transform: scale(1.06); }
 
   /* Timer view */
   .timer-view { padding: 20px; }
-  .timer-ctx  { font-size: 10px; color: #48485A; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-  .timer-task { font-size: 20px; font-weight: 700; color: #E0E0E8; margin-bottom: 22px; line-height: 1.2; }
-  .timer-num  { font-family: 'Space Mono', monospace; font-size: 54px; font-weight: 700; letter-spacing: -2px; color: #E8A347; margin-bottom: 6px; }
-  .timer-num.over { color: #E05C5C; }
-  .timer-bar-meta { display: flex; justify-content: space-between; font-family: 'Space Mono', monospace; font-size: 9px; color: #48485A; margin-bottom: 5px; }
-  .timer-bar { height: 3px; background: #1A1A28; border-radius: 2px; overflow: hidden; margin-bottom: 20px; }
+  .timer-ctx  { font-family: 'Caveat', cursive; font-size: 14px; color: #9A8B78; margin-bottom: 4px; }
+  .timer-task { font-family: 'Lora', serif; font-size: 21px; font-weight: 400; font-style: italic; color: #1E1916; margin-bottom: 24px; line-height: 1.3; }
+  .timer-num  { font-family: 'Courier Prime', monospace; font-size: 60px; font-weight: 700; letter-spacing: -1px; color: #A8721A; margin-bottom: 6px; line-height: 1; }
+  .timer-num.over { color: #B83C2C; }
+  .timer-bar-meta { display: flex; justify-content: space-between; font-family: 'Courier Prime', monospace; font-size: 9px; color: #9A8B78; margin-bottom: 5px; }
+  .timer-bar { height: 4px; background: #E4DDD0; border-radius: 2px; overflow: hidden; margin-bottom: 20px; }
   .timer-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s linear, background 0.3s; }
-  .warn-box { background: #160B0B; border: 1px solid #E05C5C44; border-radius: 9px; padding: 9px 12px; font-size: 11px; color: #E05C5C; margin-bottom: 12px; }
+  .warn-box { background: #F5ECEC; border: 1px solid #B83C2C30; border-radius: 8px; padding: 9px 12px; font-family: 'Lora', serif; font-size: 11px; color: #B83C2C; margin-bottom: 12px; }
+  .warn-box.warn { background: #F8F2DF; border-color: #9A780030; color: #7A5A00; }
   .t-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-  .ta-btn { padding: 13px; border-radius: 11px; border: 1px solid #1A1A28; background: #10101A; color: #D0D0DC; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
-  .ta-btn.ok   { background: #5DB07D; border-color: #5DB07D; color: #0B0B0F; }
-  .ta-btn.ok:hover   { background: #6DC48E; }
-  .ta-btn.xtra:hover { border-color: #E8A347; color: #E8A347; background: #E8A34710; }
-  .delta-row { background: #10101A; border: 1px solid #1A1A28; border-radius: 9px; padding: 9px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #48485A; }
+  .ta-btn { padding: 13px; border-radius: 8px; border: 1px solid #DDD5C4; background: #FDFCF8; color: #3C3428; font-family: 'Lora', serif; font-size: 13px; cursor: pointer; transition: all 0.15s; box-shadow: 0 1px 3px rgba(90,60,20,0.08); }
+  .ta-btn.ok   { background: #3A7248; border-color: #3A7248; color: #FDFCF8; }
+  .ta-btn.ok:hover { background: #44845A; }
+  .ta-btn.xtra:hover { border-color: #A8721A; color: #A8721A; background: #F5EDD8; }
+  .delta-row { background: #FDFCF8; border: 1px solid #DDD5C4; border-radius: 8px; padding: 9px 12px; display: flex; justify-content: space-between; align-items: center; font-family: 'Lora', serif; font-size: 11px; color: #9A8B78; }
 
   /* Setup view */
   .setup-view { padding: 20px; }
-  .view-title { font-size: 17px; font-weight: 700; margin-bottom: 18px; }
+  .view-title { font-family: 'Caveat', cursive; font-size: 30px; font-weight: 700; margin-bottom: 18px; color: #1E1916; }
   .setup-sec { margin-bottom: 16px; }
-  .setup-sec-lab { font-size: 10px; font-weight: 700; color: #48485A; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .setup-sec-lab { font-family: 'Caveat', cursive; font-size: 15px; font-weight: 600; color: #9A8B78; letter-spacing: 0.3px; margin-bottom: 8px; }
   .time-pair { display: flex; gap: 8px; }
-  .time-box { flex: 1; background: #10101A; border: 1px solid #1A1A28; border-radius: 10px; padding: 10px 12px; }
-  .time-box-lab { font-size: 9px; color: #48485A; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-  input[type="time"] { background: transparent; border: none; outline: none; color: #D8D8E4; font-family: 'Space Mono', monospace; font-size: 17px; font-weight: 700; width: 100%; color-scheme: dark; }
-  .setup-field { background: #10101A; border: 1px solid #1A1A28; border-radius: 10px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-  .sf-lab { font-size: 12px; color: #9090A8; }
-  .cta { width: 100%; padding: 13px; border-radius: 11px; border: none; background: #E8A347; color: #0B0B0F; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: all 0.15s; }
-  .cta:hover { background: #F0B458; }
-  .cta-ghost { width: 100%; padding: 11px; border-radius: 11px; border: 1px solid #1E1E2E; background: transparent; color: #48485A; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 6px; transition: all 0.15s; }
-  .cta-ghost:hover { border-color: #E05C5C; color: #E05C5C; }
-  .notif-status { font-size: 10px; color: #48485A; margin-top: 4px; }
+  .time-box { flex: 1; background: #FDFCF8; border: 1px solid #DDD5C4; border-radius: 8px; padding: 10px 12px; box-shadow: 0 1px 2px rgba(90,60,20,0.07); }
+  .time-box-lab { font-family: 'Caveat', cursive; font-size: 12px; color: #9A8B78; margin-bottom: 3px; }
+  input[type="time"] { background: transparent; border: none; outline: none; color: #1E1916; font-family: 'Courier Prime', monospace; font-size: 18px; font-weight: 700; width: 100%; color-scheme: light; }
+  .setup-field { background: #FDFCF8; border: 1px solid #DDD5C4; border-radius: 8px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; box-shadow: 0 1px 2px rgba(90,60,20,0.07); }
+  .sf-lab { font-family: 'Lora', serif; font-size: 13px; color: #5A4E3C; }
+  .cta { width: 100%; padding: 13px; border-radius: 8px; border: none; background: #A8721A; color: #FDFCF8; font-family: 'Caveat', cursive; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: all 0.15s; letter-spacing: 0.3px; }
+  .cta:hover { background: #BA8220; }
+  .cta-ghost { width: 100%; padding: 11px; border-radius: 8px; border: 1px solid #D4C8B4; background: transparent; color: #9A8B78; font-family: 'Lora', serif; font-size: 13px; cursor: pointer; margin-top: 6px; transition: all 0.15s; }
+  .cta-ghost:hover { border-color: #B83C2C; color: #B83C2C; }
 
   /* Stats view */
   .stats-view { padding: 20px; }
-  .big-card { background: #10101A; border: 1px solid #1A1A28; border-radius: 13px; padding: 14px; margin-bottom: 8px; }
-  .bc-lab { font-size: 10px; color: #48485A; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 2px; }
-  .bc-val { font-family: 'Space Mono', monospace; font-size: 34px; font-weight: 700; letter-spacing: -1.5px; }
-  .bc-sub { font-size: 10px; color: #48485A; margin-top: 2px; }
+  .big-card { background: #FDFCF8; border: 1px solid #DDD5C4; border-radius: 10px; padding: 14px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(90,60,20,0.08); }
+  .bc-lab { font-family: 'Caveat', cursive; font-size: 13px; color: #9A8B78; margin-bottom: 2px; }
+  .bc-val { font-family: 'Courier Prime', monospace; font-size: 38px; font-weight: 700; letter-spacing: -1px; }
+  .bc-sub { font-family: 'Lora', serif; font-style: italic; font-size: 11px; color: #9A8B78; margin-top: 3px; }
   .bar-chart { display: flex; gap: 5px; align-items: flex-end; height: 56px; margin-top: 10px; }
   .bc-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; height: 100%; justify-content: flex-end; }
-  .bc-bar { width: 100%; border-radius: 3px 3px 0 0; min-height: 3px; }
-  .bc-day { font-size: 8px; color: #38384A; font-family: 'Space Mono', monospace; }
-  .bc-col.today .bc-day { color: #E8A347; }
-  .no-data-hint { font-size: 11px; color: #303048; text-align: center; padding: 16px 0 8px; }
+  .bc-bar { width: 100%; border-radius: 2px 2px 0 0; min-height: 3px; }
+  .bc-day { font-family: 'Caveat', cursive; font-size: 11px; color: #C0B4A4; }
+  .bc-col.today .bc-day { color: #A8721A; font-weight: 700; }
+  .no-data-hint { font-family: 'Lora', serif; font-style: italic; font-size: 12px; color: #C0B4A4; text-align: center; padding: 20px 0 8px; }
 
   /* Bottom Nav */
   .bottom-nav {
     position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
     width: 100%; max-width: 400px;
-    background: rgba(11,11,15,0.96); backdrop-filter: blur(10px);
-    border-top: 1px solid #18182A;
+    background: rgba(245,240,230,0.97);
+    backdrop-filter: blur(8px);
+    border-top: 1.5px solid #D4C8B4;
     display: flex;
     padding: 10px 0 calc(14px + env(safe-area-inset-bottom, 0px));
     z-index: 100;
   }
   .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; background: transparent; border: none; cursor: pointer; padding: 3px; transition: all 0.15s; }
-  .nav-ico { font-size: 16px; opacity: 0.25; transition: opacity 0.15s; }
-  .nav-lab { font-family: 'Syne', sans-serif; font-size: 8px; font-weight: 700; color: #383850; text-transform: uppercase; letter-spacing: 0.7px; transition: color 0.15s; }
+  .nav-ico { font-size: 16px; opacity: 0.2; transition: opacity 0.15s; }
+  .nav-lab { font-family: 'Caveat', cursive; font-size: 12px; font-weight: 600; color: #C0B4A4; letter-spacing: 0.3px; transition: color 0.15s; }
   .nav-item.on .nav-ico { opacity: 1; }
-  .nav-item.on .nav-lab { color: #E8A347; }
-  .nav-item.dim { opacity: 0.4; cursor: not-allowed; }
+  .nav-item.on .nav-lab { color: #A8721A; }
+  .nav-item.dim { opacity: 0.25; cursor: not-allowed; }
   .nav-badge { position: relative; display: inline-block; }
-  .nav-badge-dot { position: absolute; top: -3px; right: -5px; width: 6px; height: 6px; border-radius: 50%; background: #E8A347; border: 1px solid #0B0B0F; }
+  .nav-badge-dot { position: absolute; top: -3px; right: -5px; width: 6px; height: 6px; border-radius: 50%; background: #A8721A; border: 1.5px solid #F5F0E6; }
 `;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -222,7 +247,7 @@ export default function Spielraum() {
   const wakeLockRef= useRef(null);
   const notifSent  = useRef(false);
 
-  // ── SW registration (update prompt) ──
+  // ── SW registration ──
   const { needRefresh: [needRefresh, setNeedRefresh], updateServiceWorker } = useRegisterSW({
     onRegistered() {},
     onRegisterError(e) { console.error('SW registration failed', e); },
@@ -254,7 +279,7 @@ export default function Spielraum() {
     };
   }, []);
 
-  // ── App Badge (pending task count) ──
+  // ── App Badge ──
   useEffect(() => {
     const pending = tasks.filter(t => t.status === 'planned').length;
     if ('setAppBadge' in navigator) navigator.setAppBadge(pending).catch(() => {});
@@ -267,19 +292,19 @@ export default function Spielraum() {
     return () => clearInterval(iRef.current);
   }, [running]);
 
-  // ── Notification when time runs over (app backgrounded) ──
-  const at   = tasks.find(t => t.id === aid);
-  const pct  = at ? Math.min(100, (elapsed / 60 / at.est) * 100) : 0;
+  const at     = tasks.find(t => t.id === aid);
+  const pct    = at ? Math.min(100, (elapsed / 60 / at.est) * 100) : 0;
   const isOver = pct >= 100;
   const isWarn = pct >= 75 && !isOver;
 
+  // ── Timer-over notification ──
   useEffect(() => {
     if (isOver && !notifSent.current && at) {
       notifSent.current = true;
       if ('Notification' in window && Notification.permission === 'granted' && document.hidden) {
         new Notification('⏰ Zeit abgelaufen!', {
           body: `${at.title} – Zeit überschritten`,
-          icon: '/icon.svg',
+          icon: '/Spielraum/icon.svg',
           tag: 'spielraum-timer',
           requireInteraction: true,
         });
@@ -300,7 +325,6 @@ export default function Spielraum() {
     wakeLockRef.current = null;
   }, []);
 
-  // Re-acquire wake lock after visibility change (iOS Safari releases it on hide)
   useEffect(() => {
     const reacquire = () => { if (!document.hidden && running) acquireWakeLock(); };
     document.addEventListener('visibilitychange', reacquire);
@@ -308,14 +332,14 @@ export default function Spielraum() {
   }, [running, acquireWakeLock]);
 
   // ── Calculations ──
-  const dayMin  = (cfg.eH * 60 + cfg.eM) - (cfg.sH * 60 + cfg.sM);
-  const breakMin= cfg.breaks.reduce((s, b) => s + b.dur, 0);
-  const net     = dayMin - breakMin;
-  const live    = tasks.filter(t => t.status !== 'deferred');
-  const taskMin = live.reduce((s, t) => s + t.est, 0);
-  const bufMin  = live.length * cfg.buf;
+  const dayMin    = (cfg.eH * 60 + cfg.eM) - (cfg.sH * 60 + cfg.sM);
+  const breakMin  = cfg.breaks.reduce((s, b) => s + b.dur, 0);
+  const net       = dayMin - breakMin;
+  const live      = tasks.filter(t => t.status !== 'deferred');
+  const taskMin   = live.reduce((s, t) => s + t.est, 0);
+  const bufMin    = live.length * cfg.buf;
   const spielraum = net - taskMin - bufMin;
-  const isGood  = spielraum >= cfg.wantFree;
+  const isGood    = spielraum >= cfg.wantFree;
   const freeDelta = at ? at.est - Math.ceil(elapsed / 60) : 0;
 
   const total = Math.max(dayMin, 1);
@@ -324,7 +348,7 @@ export default function Spielraum() {
   const brPct = Math.min((breakMin/ total) * 100, 100);
   const sPct  = Math.max(0, Math.min((Math.max(0, spielraum) / total) * 100, 100));
 
-  // ── Weekly stats from real history ──
+  // ── Weekly stats ──
   const last7 = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(); d.setDate(d.getDate() - (6 - i));
     return d.toISOString().split('T')[0];
@@ -335,16 +359,16 @@ export default function Spielraum() {
     const delta = entries.length ? entries.reduce((s, h) => s + h.delta, 0) : 0;
     return { d: dayLabel(date), acc, delta, hasData: entries.length > 0, isToday: date === todayStr() };
   });
-  const avgAcc    = Math.round(weeklyStats.filter(d => d.hasData).reduce((s, d) => s + d.acc, 0) / (weeklyStats.filter(d => d.hasData).length || 1));
-  const totalDelta= weeklyStats.filter(d => d.hasData).reduce((s, d) => s + d.delta, 0);
-  const hasHistory= history.length > 0;
+  const avgAcc     = Math.round(weeklyStats.filter(d => d.hasData).reduce((s, d) => s + d.acc, 0) / (weeklyStats.filter(d => d.hasData).length || 1));
+  const totalDelta = weeklyStats.filter(d => d.hasData).reduce((s, d) => s + d.delta, 0);
+  const hasHistory = history.length > 0;
 
   // ── Display ──
-  const today   = new Date().toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'short' });
-  const tH = Math.floor(elapsed / 3600), tM = Math.floor((elapsed % 3600) / 60), tS = elapsed % 60;
-  const timerStr = tH > 0 ? `${pad(tH)}:${pad(tM)}:${pad(tS)}` : `${pad(tM)}:${pad(tS)}`;
+  const today        = new Date().toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'short' });
+  const tH           = Math.floor(elapsed / 3600), tM = Math.floor((elapsed % 3600) / 60), tS = elapsed % 60;
+  const timerStr     = tH > 0 ? `${pad(tH)}:${pad(tM)}:${pad(tS)}` : `${pad(tM)}:${pad(tS)}`;
   const pendingCount = tasks.filter(t => t.status === 'planned').length;
-  const hasBanner = showInstall || needRefresh;
+  const hasBanner    = showInstall || needRefresh;
 
   // ── Actions ──
   const startTimer = useCallback(async id => {
@@ -372,9 +396,9 @@ export default function Spielraum() {
     if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
   }, [elapsed, aid, tasks, releaseWakeLock]);
 
-  const addMore   = () => setTasks(p => p.map(t => t.id === aid ? { ...t, est: t.est + 15 } : t));
-  const removeTask= id => setTasks(p => p.filter(t => t.id !== id));
-  const toggleDefer = id => setTasks(p => p.map(t =>
+  const addMore      = () => setTasks(p => p.map(t => t.id === aid ? { ...t, est: t.est + 15 } : t));
+  const removeTask   = id => setTasks(p => p.filter(t => t.id !== id));
+  const toggleDefer  = id => setTasks(p => p.map(t =>
     t.id === id ? { ...t, status: t.status === 'deferred' ? 'planned' : 'deferred' } : t
   ));
   const addTask = () => {
@@ -393,7 +417,7 @@ export default function Spielraum() {
 
   const requestNotifPerm = async () => {
     if ('Notification' in window) await Notification.requestPermission();
-    setCfg(p => ({ ...p })); // trigger re-render
+    setCfg(p => ({ ...p }));
   };
 
   const resetDay = () => {
@@ -412,7 +436,7 @@ export default function Spielraum() {
       {/* ── Install Banner ── */}
       {showInstall && (
         <div className="pwa-banner install">
-          <span className="pwa-banner-ico">📲</span>
+          <span className="pwa-banner-ico">📖</span>
           <span className="pwa-banner-text"><strong>Spielraum installieren</strong><br />Schnell-Zugriff vom Home-Screen</span>
           <div className="pwa-banner-actions">
             <button className="pwa-btn amber" onClick={handleInstall}>Installieren</button>
@@ -447,13 +471,13 @@ export default function Spielraum() {
             </div>
           </div>
           <div className="day-bar">
-            <div className="seg" style={{ width: `${tPct}%`,  background: '#E8A347' }} />
-            <div className="seg" style={{ width: `${bPct}%`,  background: '#222236' }} />
-            <div className="seg" style={{ width: `${brPct}%`, background: '#3A3A50' }} />
-            <div className="seg" style={{ width: `${sPct}%`,  background: '#5DB07D' }} />
+            <div className="seg" style={{ width: `${tPct}%`,  background: '#A8721A' }} />
+            <div className="seg" style={{ width: `${bPct}%`,  background: '#C8BEAC' }} />
+            <div className="seg" style={{ width: `${brPct}%`, background: '#B4AC9C' }} />
+            <div className="seg" style={{ width: `${sPct}%`,  background: '#3A7248' }} />
           </div>
           <div className="legend">
-            {[['#E8A347','Tasks'],['#222236','Puffer'],['#3A3A50','Pausen'],['#5DB07D','Spielraum']].map(([c,l]) => (
+            {[['#A8721A','Tasks'],['#C8BEAC','Puffer'],['#B4AC9C','Pausen'],['#3A7248','Spielraum']].map(([c,l]) => (
               <div className="leg-item" key={l}><div className="leg-dot" style={{background:c}}/>{l}</div>
             ))}
           </div>
@@ -541,11 +565,11 @@ export default function Spielraum() {
             <div className="timer-bar">
               <div className="timer-bar-fill" style={{
                 width: `${Math.min(100, pct)}%`,
-                background: isOver ? '#E05C5C' : isWarn ? '#E8C347' : '#E8A347',
+                background: isOver ? '#B83C2C' : isWarn ? '#A07820' : '#A8721A',
               }} />
             </div>
             {isWarn && !isOver && (
-              <div className="warn-box" style={{color:'#E8C347',borderColor:'#E8C34744',background:'#15120A'}}>
+              <div className="warn-box warn">
                 ⏱ Noch {Math.ceil(at.est - elapsed / 60)}m verbleibend
               </div>
             )}
@@ -558,7 +582,7 @@ export default function Spielraum() {
             </div>
             <div className="delta-row">
               <span>Spielraum-Delta</span>
-              <span style={{ fontFamily:"'Space Mono',monospace", fontSize:'13px', fontWeight:700, color: freeDelta >= 0 ? '#5DB07D' : '#E05C5C' }}>
+              <span style={{ fontFamily:"'Courier Prime',monospace", fontSize:'14px', fontWeight:700, color: freeDelta >= 0 ? '#3A7248' : '#B83C2C' }}>
                 {freeDelta >= 0 ? '+' : ''}{freeDelta}m
               </span>
             </div>
@@ -625,8 +649,8 @@ export default function Spielraum() {
               <div className="setup-sec-lab">Benachrichtigungen</div>
               <div className="setup-field">
                 <span className="sf-lab">Timer-Alarm</span>
-                <span style={{fontSize:'10px',color: notifPerm==='granted'?'#5DB07D': notifPerm==='denied'?'#E05C5C':'#48485A'}}>
-                  {notifPerm === 'granted' ? '✓ Erlaubt' : notifPerm === 'denied' ? '✗ Blockiert' : 'Nicht aktiviert'}
+                <span style={{fontFamily:"'Courier Prime',monospace", fontSize:'11px', color: notifPerm==='granted'?'#3A7248': notifPerm==='denied'?'#B83C2C':'#9A8B78'}}>
+                  {notifPerm === 'granted' ? '✓ Erlaubt' : notifPerm === 'denied' ? '✗ Blockiert' : 'Nicht aktiv'}
                 </span>
               </div>
               {notifPerm === 'default' && (
@@ -643,11 +667,11 @@ export default function Spielraum() {
           <div className="stats-view">
             <div className="view-title">Auswertung</div>
             {!hasHistory && (
-              <div className="no-data-hint">Noch keine Daten — schließe erste Aufgaben ab, um hier Statistiken zu sehen.</div>
+              <div className="no-data-hint">Noch keine Einträge — schließe erste Aufgaben ab.</div>
             )}
             <div className="big-card">
               <div className="bc-lab">Schätzgenauigkeit (7-Tage-Ø)</div>
-              <div className="bc-val" style={{color:'#E8A347'}}>{hasHistory ? `${avgAcc}%` : '—'}</div>
+              <div className="bc-val" style={{color:'#A8721A'}}>{hasHistory ? `${avgAcc}%` : '—'}</div>
               <div className="bc-sub">Wie gut du deine Zeit einschätzt</div>
               <div className="bar-chart">
                 {weeklyStats.map((d, i) => (
@@ -655,11 +679,11 @@ export default function Spielraum() {
                     {d.hasData ? (
                       <div className="bc-bar" style={{
                         height: `${d.acc * 0.46}px`,
-                        background: d.acc >= 80 ? '#E8A34740' : '#40405040',
-                        border: `1px solid ${d.acc >= 80 ? '#E8A347' : '#404050'}`,
+                        background: d.acc >= 80 ? '#A8721A28' : '#C4B8A430',
+                        border: `1px solid ${d.acc >= 80 ? '#A8721A' : '#C4B8A4'}`,
                       }} />
                     ) : (
-                      <div className="bc-bar" style={{ height: '3px', background: '#1A1A28' }} />
+                      <div className="bc-bar" style={{ height: '3px', background: '#E4DDD0' }} />
                     )}
                     <div className="bc-day">{d.d}</div>
                   </div>
@@ -668,7 +692,7 @@ export default function Spielraum() {
             </div>
             <div className="big-card">
               <div className="bc-lab">Gewonnener Spielraum (7 Tage)</div>
-              <div className="bc-val" style={{color: !hasHistory ? '#48485A' : totalDelta >= 0 ? '#5DB07D' : '#E05C5C'}}>
+              <div className="bc-val" style={{color: !hasHistory ? '#C0B4A4' : totalDelta >= 0 ? '#3A7248' : '#B83C2C'}}>
                 {hasHistory ? `${totalDelta >= 0 ? '+' : ''}${totalDelta}m` : '—'}
               </div>
               <div className="bc-sub">Zeitersparnis durch schnellere Erledigung</div>
@@ -680,8 +704,8 @@ export default function Spielraum() {
                     <div className={`bc-col${d.isToday?' today':''}`} key={i}>
                       <div className="bc-bar" style={{
                         height: `${h}px`,
-                        background: !d.hasData ? '#1A1A28' : pos ? '#5DB07D40' : '#E05C5C40',
-                        border: `1px solid ${!d.hasData ? '#1A1A28' : pos ? '#5DB07D' : '#E05C5C'}`,
+                        background: !d.hasData ? '#E4DDD0' : pos ? '#3A724830' : '#B83C2C28',
+                        border: `1px solid ${!d.hasData ? '#E4DDD0' : pos ? '#3A7248' : '#B83C2C'}`,
                       }} />
                       <div className="bc-day">{d.d}</div>
                     </div>
