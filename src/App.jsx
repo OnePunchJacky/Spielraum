@@ -378,17 +378,36 @@ export default function Spielraum() {
   const pendingCount = tasks.filter(t => t.status === 'planned').length;
   const hasBanner    = showInstall || needRefresh;
 
+  // ── SW alarm helpers ──
+  const scheduleSwAlarm = useCallback((task) => {
+    if (!navigator.serviceWorker?.controller) return;
+    navigator.serviceWorker.controller.postMessage({
+      type: 'SCHEDULE_ALARM',
+      delay: task.est * 60 * 1000,
+      title: '⏰ Zeit abgelaufen!',
+      body: `${task.title} – geschätzte Zeit überschritten`,
+    });
+  }, []);
+
+  const cancelSwAlarm = useCallback(() => {
+    if (!navigator.serviceWorker?.controller) return;
+    navigator.serviceWorker.controller.postMessage({ type: 'CANCEL_ALARM' });
+  }, []);
+
   // ── Actions ──
   const startTimer = useCallback(async id => {
     await acquireWakeLock();
     if ('Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission().catch(() => {});
     }
+    const task = tasks.find(t => t.id === id);
     setAid(id); setElapsed(0); setRunning(true); setView('active');
     setTasks(p => p.map(t => t.id === id ? { ...t, status: 'active' } : t));
-  }, [acquireWakeLock]);
+    if (task) scheduleSwAlarm(task);
+  }, [acquireWakeLock, tasks, scheduleSwAlarm]);
 
   const finishTask = useCallback(() => {
+    cancelSwAlarm();
     const actual = Math.ceil(elapsed / 60) || 1;
     const entry  = tasks.find(t => t.id === aid);
     if (entry) {
@@ -402,7 +421,7 @@ export default function Spielraum() {
     setAid(null);
     setView('plan');
     if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
-  }, [elapsed, aid, tasks, releaseWakeLock]);
+  }, [elapsed, aid, tasks, releaseWakeLock, cancelSwAlarm]);
 
   const addMore      = () => setTasks(p => p.map(t => t.id === aid ? { ...t, est: t.est + 15 } : t));
   const removeTask   = id => setTasks(p => p.filter(t => t.id !== id));
@@ -429,6 +448,7 @@ export default function Spielraum() {
   };
 
   const resetDay = () => {
+    cancelSwAlarm();
     setTasks(DEFAULT_TASKS);
     setAid(null); setElapsed(0); setRunning(false);
     releaseWakeLock();
