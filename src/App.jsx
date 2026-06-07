@@ -417,14 +417,54 @@ export default function Spielraum() {
   const hasBanner    = showInstall || needRefresh;
 
   // ── SW alarm helpers ──
+  // Stores alarm info in sessionStorage so the visibility-change check (Layer 3)
+  // can fire a notification when the user returns to the app after the timer expired.
   const scheduleSwAlarm = useCallback((delayMs, title, body) => {
-    if (!navigator.serviceWorker?.controller) return;
-    navigator.serviceWorker.controller.postMessage({ type: 'SCHEDULE_ALARM', delay: delayMs, title, body });
+    const fireAt = Date.now() + delayMs;
+    sessionStorage.setItem('sr_alarm_at',    String(fireAt));
+    sessionStorage.setItem('sr_alarm_title', title);
+    sessionStorage.setItem('sr_alarm_body',  body);
+
+    const send = sw => sw?.postMessage({ type: 'SCHEDULE_ALARM', delay: delayMs, fireAt, title, body });
+    if (navigator.serviceWorker?.controller) {
+      send(navigator.serviceWorker.controller);
+    } else if (navigator.serviceWorker) {
+      navigator.serviceWorker.ready.then(reg => send(reg.active)).catch(() => {});
+    }
   }, []);
 
   const cancelSwAlarm = useCallback(() => {
+    sessionStorage.removeItem('sr_alarm_at');
+    sessionStorage.removeItem('sr_alarm_title');
+    sessionStorage.removeItem('sr_alarm_body');
     if (!navigator.serviceWorker?.controller) return;
     navigator.serviceWorker.controller.postMessage({ type: 'CANCEL_ALARM' });
+  }, []);
+
+  // Layer 3 — visibility-change check: fires a notification the moment the user
+  // returns to the app if the alarm time has already passed (covers iOS where the
+  // SW is suspended when the screen locks).
+  useEffect(() => {
+    const check = () => {
+      if (document.hidden) return;
+      const fireAt = Number(sessionStorage.getItem('sr_alarm_at'));
+      if (!fireAt || Date.now() < fireAt) return;
+      const title = sessionStorage.getItem('sr_alarm_title') || '⏰ Zeit abgelaufen!';
+      const body  = sessionStorage.getItem('sr_alarm_body')  || 'Dein Timer ist abgelaufen.';
+      sessionStorage.removeItem('sr_alarm_at');
+      sessionStorage.removeItem('sr_alarm_title');
+      sessionStorage.removeItem('sr_alarm_body');
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(title, {
+          body,
+          icon: '/Spielraum/icon.svg',
+          tag: 'spielraum-alarm',
+          requireInteraction: true,
+        });
+      }
+    };
+    document.addEventListener('visibilitychange', check);
+    return () => document.removeEventListener('visibilitychange', check);
   }, []);
 
   // ── Actions ──
