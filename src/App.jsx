@@ -115,20 +115,19 @@ const CSS = `
   .t-action.del:hover   { border-color: #B83C2C; color: #B83C2C; background: #F5ECEC; }
   .t-action.defer:hover { border-color: #7A9878; color: #7A9878; background: #EDF3EE; }
 
-  /* Add row — title input + chips for duration */
-  .add-row { background: #FDFCF8; border: 1.5px dashed #C4B8A4; border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
-  .add-row-top { display: flex; gap: 8px; align-items: center; }
+  /* Add row — title input + Std:Min duration field */
+  .add-row { background: #FDFCF8; border: 1.5px dashed #C4B8A4; border-radius: 8px; padding: 10px 12px; display: flex; gap: 8px; align-items: center; }
   .add-inp { flex: 1; background: transparent; border: none; outline: none; color: #2C2418; font-family: 'Lora', serif; font-size: 16px; }
   .add-inp::placeholder { color: #C4B8A4; font-style: italic; }
   .add-btn { width: 26px; height: 26px; border-radius: 6px; border: none; background: #A8721A; color: #FDFCF8; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; transition: all 0.15s; flex-shrink: 0; }
   .add-btn:hover { background: #BA8220; transform: scale(1.06); }
-  /* Duration chips */
-  .est-row { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
-  .est-chip { padding: 5px 9px; border-radius: 5px; border: 1px solid #D4C8B4; background: transparent; color: #9A8B78; font-family: 'Courier Prime', monospace; font-size: 12px; cursor: pointer; transition: all 0.15s; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
-  .est-chip.sel { background: #A8721A18; border-color: #A8721A; color: #A8721A; font-weight: 700; }
-  .est-chip:active { transform: scale(0.93); }
-  .est-custom { width: 48px; background: transparent; border: 1px solid #D4C8B4; border-radius: 5px; padding: 5px 6px; font-family: 'Courier Prime', monospace; font-size: 12px; color: #A8721A; text-align: center; outline: none; -webkit-appearance: none; }
-  .est-custom:focus { border-color: #A8721A; }
+  /* Std:Min duration field */
+  .dur-field { display: inline-flex; align-items: center; gap: 1px; border: 1px solid #D4C8B4; border-radius: 6px; background: transparent; transition: border-color 0.15s; flex-shrink: 0; overflow: hidden; }
+  .dur-field:focus-within { border-color: #A8721A; }
+  .dur-inp { width: 34px; background: transparent; border: none; outline: none; font-family: 'Courier Prime', monospace; font-size: 15px; color: #A8721A; text-align: center; padding: 5px 2px; -webkit-appearance: none; }
+  .dur-colon { font-family: 'Courier Prime', monospace; font-size: 15px; color: #C4B8A4; padding: 0 1px; user-select: none; line-height: 1; }
+  .dur-labels { display: flex; justify-content: space-between; width: 70px; padding: 0 6px; }
+  .dur-lbl { font-family: 'Caveat', cursive; font-size: 9px; color: #C4B8A4; letter-spacing: 0.3px; }
 
   /* Spielraum-start button (plan view) */
   .sr-start-btn { width: 100%; padding: 13px; border-radius: 8px; border: 1px dashed #3A724850; background: #EDF3EE; color: #3A7248; font-family: 'Lora', serif; font-size: 13px; cursor: pointer; margin-top: 6px; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
@@ -231,8 +230,6 @@ const loadState = (key, def) => {
   try { const s = localStorage.getItem(key); return s ? JSON.parse(s) : def; }
   catch { return def; }
 };
-
-const EST_PRESETS = [15, 30, 45, 60, 90];
 
 const DEFAULT_TASKS = [
   { id: 1, title: 'E-Mails & Nachrichten', est: 30, actual: null, status: 'planned' },
@@ -685,36 +682,39 @@ export default function Spielraum() {
 
             {/* Add task */}
             <div className="add-row">
-              <div className="add-row-top">
-                <input
-                  className="add-inp"
-                  placeholder="Neue Aufgabe..."
-                  value={nTask.title}
-                  onChange={e => setNTask(p => ({ ...p, title: e.target.value }))}
-                  onKeyDown={e => e.key === 'Enter' && addTask()}
-                />
-                <button className="add-btn" onClick={addTask}>+</button>
+              <input
+                className="add-inp"
+                placeholder="Neue Aufgabe..."
+                value={nTask.title}
+                onChange={e => setNTask(p => ({ ...p, title: e.target.value }))}
+                onKeyDown={e => e.key === 'Enter' && addTask()}
+              />
+              <div>
+                <div className="dur-field">
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    className="dur-inp"
+                    min="0" max="12"
+                    value={Math.floor(nTask.est / 60)}
+                    onChange={e => setNTask(p => ({ ...p, est: clampNum(e.target.value, 0, 12) * 60 + (p.est % 60) }))}
+                  />
+                  <span className="dur-colon">:</span>
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    className="dur-inp"
+                    min="0" max="59" step="5"
+                    value={nTask.est % 60}
+                    onChange={e => setNTask(p => ({ ...p, est: Math.floor(p.est / 60) * 60 + clampNum(e.target.value, 0, 59) }))}
+                  />
+                </div>
+                <div className="dur-labels">
+                  <span className="dur-lbl">Std</span>
+                  <span className="dur-lbl">Min</span>
+                </div>
               </div>
-              <div className="est-row">
-                {EST_PRESETS.map(v => (
-                  <button
-                    key={v}
-                    className={`est-chip${nTask.est === v ? ' sel' : ''}`}
-                    onClick={() => setNTask(p => ({ ...p, est: v }))}
-                  >
-                    {v < 60 ? `${v}m` : `${v / 60}h`}
-                  </button>
-                ))}
-                <input
-                  type="number"
-                  inputMode="numeric"
-                  className="est-custom"
-                  min="5" max="480" step="5"
-                  value={nTask.est}
-                  onChange={e => setNTask(p => ({ ...p, est: clampNum(e.target.value, 5, 480) }))}
-                  title="Minuten (eigener Wert)"
-                />
-              </div>
+              <button className="add-btn" onClick={addTask}>+</button>
             </div>
 
             {/* Spielraum-Timer start */}
