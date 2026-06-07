@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Transparent background (any-purpose icon) -->
+  <rect width="512" height="512" rx="96" fill="#0B0B0F"/>
+
+  <!-- Outer clock ring (base) -->
+  <circle cx="256" cy="256" r="190" fill="none" stroke="#1A1A28" stroke-width="22"/>
+
+  <!-- Tasks arc: amber, 12 o'clock → ~4:30 (≈135°), sweep clockwise -->
+  <!-- 12 o'clock = (256, 66)  |  135° CW endpoint: angle=-90+135=45° → x=256+190·cos45≈390, y=256+190·sin45≈390 -->
+  <path d="M256,66 A190,190 0 0,1 390,390"
+        fill="none" stroke="#E8A347" stroke-width="22" stroke-linecap="round"/>
+
+  <!-- Spielraum arc: green, ~4:30 → 12 o'clock (225°, large arc) -->
+  <path d="M390,390 A190,190 0 1,1 256,66"
+        fill="none" stroke="#5DB07D" stroke-width="22" stroke-linecap="round"/>
+
+  <!-- Hour hand (pointing to 12, amber) -->
+  <line x1="256" y1="256" x2="256" y2="92" stroke="#E8A347" stroke-width="16" stroke-linecap="round"/>
+
+  <!-- Minute hand (pointing to ~4, subtle) -->
+  <line x1="256" y1="256" x2="375" y2="345" stroke="#E8A347" stroke-width="10" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Center hub -->
+  <circle cx="256" cy="256" r="20" fill="#E8A347"/>
+  <circle cx="256" cy="256" r="8"  fill="#0B0B0F"/>
+</svg>

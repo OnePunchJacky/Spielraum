@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Full bleed background for maskable (safe zone = center 80%) -->
+  <rect width="512" height="512" fill="#0B0B0F"/>
+
+  <!-- Outer clock ring -->
+  <circle cx="256" cy="256" r="170" fill="none" stroke="#1A1A28" stroke-width="20"/>
+
+  <!-- Tasks arc: amber -->
+  <path d="M256,86 A170,170 0 0,1 376.4,376.4"
+        fill="none" stroke="#E8A347" stroke-width="20" stroke-linecap="round"/>
+
+  <!-- Spielraum arc: green -->
+  <path d="M376.4,376.4 A170,170 0 1,1 256,86"
+        fill="none" stroke="#5DB07D" stroke-width="20" stroke-linecap="round"/>
+
+  <!-- Hour hand -->
+  <line x1="256" y1="256" x2="256" y2="104" stroke="#E8A347" stroke-width="14" stroke-linecap="round"/>
+
+  <!-- Minute hand -->
+  <line x1="256" y1="256" x2="355" y2="330" stroke="#E8A347" stroke-width="9" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Center hub -->
+  <circle cx="256" cy="256" r="18" fill="#E8A347"/>
+  <circle cx="256" cy="256" r="7"  fill="#0B0B0F"/>
+</svg>
