@@ -126,8 +126,6 @@ const CSS = `
   .dur-field:focus-within { border-color: #A8721A; }
   .dur-inp { width: 34px; background: transparent; border: none; outline: none; font-family: 'Courier Prime', monospace; font-size: 15px; color: #A8721A; text-align: center; padding: 5px 2px; -webkit-appearance: none; }
   .dur-colon { font-family: 'Courier Prime', monospace; font-size: 15px; color: #C4B8A4; padding: 0 1px; user-select: none; line-height: 1; }
-  .dur-labels { display: flex; justify-content: space-between; width: 70px; padding: 0 6px; }
-  .dur-lbl { font-family: 'Caveat', cursive; font-size: 9px; color: #C4B8A4; letter-spacing: 0.3px; }
 
   /* Spielraum-start button (plan view) */
   .sr-start-btn { width: 100%; padding: 13px; border-radius: 8px; border: 1px dashed #3A724850; background: #EDF3EE; color: #3A7248; font-family: 'Lora', serif; font-size: 13px; cursor: pointer; margin-top: 6px; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
@@ -708,10 +706,6 @@ export default function Spielraum() {
                     value={nTask.est % 60}
                     onChange={e => setNTask(p => ({ ...p, est: Math.floor(p.est / 60) * 60 + clampNum(e.target.value, 0, 59) }))}
                   />
-                </div>
-                <div className="dur-labels">
-                  <span className="dur-lbl">Std</span>
-                  <span className="dur-lbl">Min</span>
                 </div>
               </div>
               <button className="add-btn" onClick={addTask}>+</button>
